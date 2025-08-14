@@ -1,0 +1,110 @@
+/* dashboard.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.3);
+  backdrop-filter: blur(5px);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.btn-logout {
+  background-color: #ffce00;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.2);
+}
+
+.btn-logout:hover {
+  background-color: #e6b800;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 40px 30px;
+  max-width: 960px;
+  margin: auto;
+}
+
+.welcome-section h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #ffce00;
+}
+
+.welcome-section p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 600px;
+  color: #e0e0e0;
+}
+
+.content-section {
+  margin-top: 40px;
+}
+
+.content-section h3 {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.cards-container {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 20px;
+  width: 260px;
+  box-shadow: 0 8px 16px rgb(0 0 0 / 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 0.45);
+}
+
+.card h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #ffce00;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #f0f0f0;
+  line-height: 1.4;
+}

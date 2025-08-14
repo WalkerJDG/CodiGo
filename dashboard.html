@@ -1,0 +1,43 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CodiGo! - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>CodiGo! - Dashboard</h1>
+    <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
+  </header>
+
+  <main class="main-content">
+    <section class="welcome-section">
+      <h2>Bienvenido, <span id="usernameDisplay"></span>!</h2>
+      <p>Este es tu espacio para aprender programación web de forma interactiva y sencilla.</p>
+    </section>
+
+    <section class="content-section">
+      <h3>Recursos de estudio</h3>
+      <div class="cards-container">
+        <div class="card">
+          <h4>HTML Básico</h4>
+          <p>Aprende las etiquetas y estructura básica de HTML.</p>
+        </div>
+        <div class="card">
+          <h4>CSS para Estilos</h4>
+          <p>Domina estilos y diseño para tus páginas web.</p>
+        </div>
+        <div class="card">
+          <h4>JavaScript Interactivo</h4>
+          <p>Haz que tu web sea dinámica con JS.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
