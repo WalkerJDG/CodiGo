@@ -1,66 +1,57 @@
-console.log("✅ register.js cargado correctamente");
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("📌 DOM listo");
+  const form = document.getElementById('registerForm');
+  const nameEl = document.getElementById('name');
+  const emailEl = document.getElementById('email');
+  const passEl = document.getElementById('password');
+  const confirmEl = document.getElementById('confirmPassword');
 
-    const registerForm = document.getElementById('registerForm');
-    console.log("📌 Formulario encontrado:", registerForm);
+  const eName = document.getElementById('err-name');
+  const eEmail = document.getElementById('err-email');
+  const ePass = document.getElementById('err-password');
+  const eConfirm = document.getElementById('err-confirm');
 
-    if (!registerForm) {
-        console.error("❌ No se encontró el formulario con id 'registerForm'");
-        return;
+  function showError(el, msgEl, msg) {
+    msgEl.textContent = msg;
+    el.style.boxShadow = '0 0 0 2px rgba(255,0,0,.6)';
+  }
+  function clearError(el, msgEl) {
+    msgEl.textContent = '';
+    el.style.boxShadow = '';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    let ok = true;
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
+    const pass = passEl.value.trim();
+    const confirm = confirmEl.value.trim();
+
+    clearError(nameEl, eName);
+    clearError(emailEl, eEmail);
+    clearError(passEl, ePass);
+    clearError(confirmEl, eConfirm);
+
+    if (name.length < 3) { showError(nameEl, eName, 'Mínimo 3 caracteres'); ok = false; }
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRegex.test(email)) { showError(emailEl, eEmail, 'Correo inválido'); ok = false; }
+    const strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\S]{8,}$/;
+    if (!strong.test(pass)) { showError(passEl, ePass, 'Min 8 con mayúscula, minúscula y número'); ok = false; }
+    if (pass !== confirm) { showError(confirmEl, eConfirm, 'No coinciden'); ok = false; }
+
+    if (!ok) return;
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.find(u => u.email === email)) {
+      showError(emailEl, eEmail, 'Correo ya registrado');
+      return;
     }
 
-    registerForm.addEventListener('submit', (event) => {
-        console.log("🚀 Se hizo submit al formulario");
-        event.preventDefault();
+    users.push({ name, email, password: pass });
+    localStorage.setItem('users', JSON.stringify(users));
 
-        const name = document.getElementById('name')?.value.trim() || "";
-        const email = document.getElementById('email')?.value.trim() || "";
-        const password = document.getElementById('password')?.value.trim() || "";
-        const confirmPassword = document.getElementById('confirmPassword')?.value.trim() || "";
-
-        // Validación: campos vacíos
-        if (!name || !email || !password || !confirmPassword) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
-
-        // Validación: formato de correo
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Por favor, ingresa un correo electrónico válido.");
-            return;
-        }
-
-        // Validación: contraseña segura
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-        if (!passwordRegex.test(password)) {
-            alert("La contraseña debe tener al menos 6 caracteres, incluyendo letras y números.");
-            return;
-        }
-
-        // Validación: confirmación de contraseña
-        if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden.");
-            return;
-        }
-
-        // Validación: usuario existente
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        if (users.find(user => user.email === email)) {
-            alert("El correo ya está registrado. Intenta con otro.");
-            return;
-        }
-
-        // Guardar usuario
-        users.push({ name, email, password });
-        localStorage.setItem('users', JSON.stringify(users));
-
-        alert("Cuenta creada con éxito.");
-        console.log("✅ Usuario registrado:", { name, email });
-
-        // Redirigir al login
-        window.location.href = 'login.html';
-    });
+    alert('Cuenta creada con éxito ✅');
+    window.location.href = 'login.html';
+  });
 });

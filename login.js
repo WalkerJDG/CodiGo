@@ -1,44 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
+  const form = document.getElementById('loginForm');
+  const emailEl = document.getElementById('email');
+  const passEl = document.getElementById('password');
+  const eEmail = document.getElementById('err-email');
+  const ePass = document.getElementById('err-pass');
 
-    loginForm.addEventListener('submit', (event) => {
-        event.preventDefault();
+  function showError(el, msgEl, msg) {
+    msgEl.textContent = msg;
+    el.style.boxShadow = '0 0 0 2px rgba(255,0,0,.6)';
+  }
+  function clearError(el, msgEl) {
+    msgEl.textContent = '';
+    el.style.boxShadow = '';
+  }
 
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
+  form.addEventListener('submit', e => {
+    e.preventDefault();
 
-        // Validación: campos vacíos
-        if (!email || !password) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
+    const email = emailEl.value.trim();
+    const pass = passEl.value.trim();
 
-        // Validación: formato de correo
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Por favor, ingresa un correo electrónico válido.");
-            return;
-        }
+    clearError(emailEl, eEmail);
+    clearError(passEl, ePass);
 
-        // Validación: longitud de contraseña
-        if (password.length < 6) {
-            alert("La contraseña debe tener al menos 6 caracteres.");
-            return;
-        }
+    if (!email) { showError(emailEl, eEmail, 'Ingresa tu correo'); return; }
+    if (!pass) { showError(passEl, ePass, 'Ingresa tu contraseña'); return; }
 
-        // Verificar usuario en localStorage
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(user => user.email === email && user.password === password);
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => u.email === email && u.password === pass);
 
-        if (!user) {
-            alert("Correo o contraseña incorrectos.");
-            return;
-        }
+    if (!user) {
+      showError(emailEl, eEmail, 'Correo o contraseña incorrectos');
+      return;
+    }
 
-        // Guardar sesión activa
-        localStorage.setItem('usuarioActivo', JSON.stringify(user));
-
-        alert(`Bienvenido ${user.name}`);
-        window.location.href = 'dashboard.html';
-    });
+    localStorage.setItem('usuarioActivo', JSON.stringify(user));
+    alert('Bienvenido ' + user.name + ' 👋');
+    window.location.href = 'dashboard.html';
+  });
 });

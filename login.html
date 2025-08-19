@@ -1,25 +1,32 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CodiGo! - Iniciar Sesión</title>
+  <title>Login - CodiGo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="login.css" />
 </head>
 <body>
   <div class="container">
-    <div class="form-box">
-      <h1 class="logo">CodiGo! 🚀</h1>
+    <div class="box">
+      <h1 class="logo">CodiGo 🚀</h1>
       <h2>Inicia sesión</h2>
-      <form id="loginForm">
-        <input type="email" id="email" placeholder="Correo electrónico"/>
-        <input type="password" id="password" placeholder="Contraseña"/>
-        <button type="submit">Ingresar</button>
-        <p class="register-link">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <input id="email" type="text" placeholder="Correo electrónico" />
+          <small class="error" id="err-email"></small>
+        </div>
+        <div class="field">
+          <input id="password" type="password" placeholder="Contraseña" />
+          <small class="error" id="err-pass"></small>
+        </div>
+        <button type="submit" class="btn">Ingresar</button>
+        <p class="muted">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
       </form>
     </div>
   </div>
+
   <script src="login.js"></script>
 </body>
 </html>
