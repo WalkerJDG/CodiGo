@@ -53,3 +53,6 @@ button.btn{
 .btn-light:hover{background:var(--accent);color:#fff}
 .btn-outline{background:transparent;border:2px solid #fff;color:#fff}
 .btn-outline:hover{background:rgba(255,255,255,.2)}
+
+
+/* Responsive styles */
