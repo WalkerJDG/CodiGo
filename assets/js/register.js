@@ -52,6 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('users', JSON.stringify(users));
 
     alert('Cuenta creada con éxito ✅');
-    window.location.href = 'login.html';
+    window.location.href = "../login.html"; // Ajusta ruta si tu login.html está en otra carpeta
   });
 });

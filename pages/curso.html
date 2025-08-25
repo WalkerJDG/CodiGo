@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>CodiGo · Curso (Gamer)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/curso.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="left">
+      <button class="back" onclick="volverDashboard()">⬅ Dashboard</button>
+    </div>
+    <div class="center">
+      <div id="courseTitle" class="title">Curso</div>
+      <div id="courseSubtitle" class="subtitle">Subtítulo</div>
+    </div>
+    <div class="right">
+      <div id="xpBadge" class="xp">XP: 0</div>
+    </div>
+  </header>
+
+  <main class="main">
+    <aside class="left-col">
+      <div class="card">
+        <h3>📖 Teoría</h3>
+        <div id="theory" class="theory"></div>
+      </div>
+
+      <div class="card">
+        <h3>🧩 Ejemplo base</h3>
+        <pre id="example" class="example"></pre>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="loadExample" class="btn-primary">Cargar al editor</button>
+          <button id="copyExample" class="btn-ghost">Copiar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📝 Mini-Quiz</h3>
+        <div id="quiz" class="quiz-list"></div>
+        <div style="margin-top:12px">
+          <button id="finishBtn" class="btn-primary">Finalizar quiz</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="right-col">
+      <div class="card">
+        <h3>💻 Editor</h3>
+        <textarea id="editor" class="editor"></textarea>
+        <div class="row-btns">
+          <button id="runBtn" class="btn-primary">▶ Ejecutar</button>
+          <button id="resetBtn" class="btn-outline">↺ Reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🖥 Resultado</h3>
+        <iframe id="output" sandbox="allow-scripts allow-same-origin" class="output"></iframe>
+      </div>
+
+      <div class="card">
+        <h3>🧯 Consola</h3>
+        <div id="console" class="console"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/curso.js"></script>
+</body>
+</html>

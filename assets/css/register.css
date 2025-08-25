@@ -1,30 +1,26 @@
 :root {
-  --brand:#00f7ff; /* cian eléctrico */
-  --accent:#ff3cac; /* rosado tecnológico */
-  --bg1:#0f0c29;
-  --bg2:#302b63;
-  --bg3:#24243e;
-  --text:#f5f5f5;
+  --brand:#00fff7;
+  --accent:#39ff14;
+  --bg1:#010409;
+  --bg2:#0d1117;
+  --text:#e6fff7;
 }
 
 body {
   margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-  font-family:'Segoe UI',Arial,sans-serif; color:var(--text);
-  background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
+  font-family:Consolas,monospace; color:var(--text);
+  background:linear-gradient(-45deg,var(--bg1),var(--bg2),#000);
   background-size:400% 400%; animation:bgMove 18s ease infinite;
 }
-@keyframes bgMove {
-  0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}
-}
+@keyframes bgMove {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-.container {max-width:440px;width:100%;padding:20px}
 .box {
-  background:rgba(255,255,255,.07);
+  background:rgba(255,255,255,.05);
   backdrop-filter:blur(12px);
   border-radius:18px;
   padding:28px 24px;
   text-align:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  box-shadow:0 0 12px rgba(0,255,247,.25),0 0 22px rgba(57,255,20,.15);
   animation:fadeIn .8s ease both;
 }
 @keyframes fadeIn {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -36,6 +32,7 @@ body {
   -webkit-text-fill-color:transparent;
   font-weight:900;
   font-size:1.8rem;
+  animation:hacker-glow 3s infinite alternate;
 }
 
 h2 {margin:10px 0 20px;font-weight:700;color:var(--brand)}
@@ -46,14 +43,14 @@ input {
   padding:12px;
   border:none;
   border-radius:12px;
-  background:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.1);
   color:#fff;
   outline:none;
-  transition:.2s;
+  transition:.25s;
 }
 input:focus {
-  background:rgba(0,247,255,.2);
-  box-shadow:0 0 12px var(--brand);
+  background:rgba(0,255,247,.2);
+  box-shadow:0 0 10px var(--brand),0 0 14px var(--accent);
 }
 .error {display:block;font-size:.8rem;color:#ff6b6b;min-height:1.2em}
 
@@ -64,14 +61,15 @@ input:focus {
   border-radius:12px;
   margin-top:6px;
   background:linear-gradient(90deg,var(--brand),var(--accent));
-  color:#fff;
+  color:#000;
   font-weight:900;
   cursor:pointer;
-  transition:transform .2s, box-shadow .2s;
+  transition:.25s;
+  font-family:monospace;
 }
 .btn:hover {
-  transform:translateY(-3px) scale(1.02);
-  box-shadow:0 6px 16px rgba(0,247,255,.4);
+  transform:translateY(-3px) scale(1.05);
+  box-shadow:0 0 10px var(--brand),0 0 14px var(--accent);
 }
 
 .muted {font-size:.95rem;margin-top:12px}
@@ -82,4 +80,9 @@ input:focus {
   transition:.2s;
 }
 .muted a:hover {color:var(--accent)}
-  
+
+@keyframes hacker-glow {
+  0% { text-shadow: 0 0 6px var(--brand), 0 0 12px var(--accent); }
+  50% { text-shadow: 0 0 12px #ff00de, 0 0 20px var(--accent); }
+  100% { text-shadow: 0 0 6px var(--brand), 0 0 12px var(--accent); }
+}

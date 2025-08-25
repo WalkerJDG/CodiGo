@@ -36,6 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('usuarioActivo', JSON.stringify(user));
     alert('Bienvenido ' + user.name + ' 👋');
-    window.location.href = 'dashboard.html';
+    window.location.href = "../pages/dashboard.html";
   });
 });
