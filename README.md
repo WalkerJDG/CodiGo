@@ -63,6 +63,7 @@ tu-ruta/
       ├─ register.js
       ├─ dashboard.js
       └─ curso.js
+```
 
 🎨 Guía de estilos (Design System)
 🎨 Teoría aplicada
