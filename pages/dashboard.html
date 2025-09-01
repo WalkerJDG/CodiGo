@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>CodiGo · Dashboard (Green/Cyan)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">CodiGo</div>
-      <div class="subtitle">Aprende. Practica. Progresa.</div>
-    </div>
-    <div class="actions">
-      <div id="userBadge" class="userBadge">Invitado</div>
-      <button class="btn ghost" onclick="cerrarSesion()">Salir</button>
-    </div>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="brand badge">📚 Dashboard</div>
+      <span class="badge" style="margin-left:auto;">Invitado</span>
+      <button class="btn btn-secondary" id="btn-logout">Cerrar sesión</button>
+    </nav>
   </header>
 
   <main class="container">
-    <section class="panel">
-      <h2>📚 Cursos disponibles</h2>
-      <div id="availableGrid" class="grid"></div>
+    <section class="card" style="margin-bottom:22px;">
+      <div class="section-title">✨ Cursos disponibles</div>
+      <p class="section-sub">Selecciona un curso; el botón se adapta: <span class="kbd">Inscribirme</span> /
+        <span class="kbd">Abrir</span> / <span class="kbd">Cancelar</span>.</p>
     </section>
 
-    <section class="panel">
-      <h2>🧾 Mis cursos</h2>
-      <div id="myGrid" class="grid"></div>
+    <section class="grid" id="available-section">
+      <!-- Cursos disponibles se inyectan aquí -->
     </section>
+
+    <section class="card" style="margin:28px 0 14px;">
+      <div class="section-title">🧭 Mis cursos</div>
+      <p class="section-sub">Ábrelos cuando quieras o cancela para reiniciar tu avance.</p>
+    </section>
+
+    <section class="grid" id="my-section">
+      <!-- Mis cursos se inyectan aquí -->
+    </section>
+
+    <p class="footer">Progreso y XP se guardan localmente en tu navegador.</p>
   </main>
-
-  <div id="floatingGlow" aria-hidden="true"></div>
 
   <script src="../assets/js/dashboard.js"></script>
 </body>

@@ -1,70 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>CodiGo · Curso (Gamer)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="../assets/css/curso.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Curso</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body>
-  <header class="top">
-    <div class="left">
-      <button class="back" onclick="volverDashboard()">⬅ Dashboard</button>
-    </div>
-    <div class="center">
-      <div id="courseTitle" class="title">Curso</div>
-      <div id="courseSubtitle" class="subtitle">Subtítulo</div>
-    </div>
-    <div class="right">
-      <div id="xpBadge" class="xp">XP: 0</div>
-    </div>
+  <header class="header">
+    <nav class="nav">
+      <a class="brand badge" href="../pages/dashboard.html">◀ Volver</a>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <span id="pill-curso" class="pill">Curso</span>
+        <span id="pill-nivel" class="pill">Lv 1</span>
+      </div>
+    </nav>
   </header>
 
-  <main class="main">
-    <aside class="left-col">
-      <div class="card">
-        <h3>📖 Teoría</h3>
-        <div id="theory" class="theory"></div>
+  <main class="container">
+    <section class="card">
+      <div class="course-header">
+        <h2 id="titulo-curso" class="section-title" style="margin:0">Curso</h2>
+        <div class="helper" id="helper-xp">XP: 0 • Progreso: 0%</div>
       </div>
-
-      <div class="card">
-        <h3>🧩 Ejemplo base</h3>
-        <pre id="example" class="example"></pre>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button id="loadExample" class="btn-primary">Cargar al editor</button>
-          <button id="copyExample" class="btn-ghost">Copiar</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>📝 Mini-Quiz</h3>
-        <div id="quiz" class="quiz-list"></div>
-        <div style="margin-top:12px">
-          <button id="finishBtn" class="btn-primary">Finalizar quiz</button>
-        </div>
-      </div>
-    </aside>
-
-    <section class="right-col">
-      <div class="card">
-        <h3>💻 Editor</h3>
-        <textarea id="editor" class="editor"></textarea>
-        <div class="row-btns">
-          <button id="runBtn" class="btn-primary">▶ Ejecutar</button>
-          <button id="resetBtn" class="btn-outline">↺ Reset</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>🖥 Resultado</h3>
-        <iframe id="output" sandbox="allow-scripts allow-same-origin" class="output"></iframe>
-      </div>
-
-      <div class="card">
-        <h3>🧯 Consola</h3>
-        <div id="console" class="console"></div>
-      </div>
+      <div class="progress-bar"><div id="pb" class="progress" style="width:0%"></div></div>
     </section>
+
+    <div class="stack">
+      <!-- Teoría -->
+      <section class="card">
+        <div class="section-title">📖 Teoría del curso</div>
+        <p class="section-sub">
+          Aquí aprenderás los fundamentos de este curso con ejemplos claros y prácticos.
+          Usa etiquetas semánticas como <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, 
+          <code>&lt;section&gt;</code> y <code>&lt;footer&gt;</code>. Recuerda el atributo
+          <code>alt</code> en imágenes para accesibilidad.
+        </p>
+        <hr class="sep" />
+        <p class="helper">Tip: abre la consola del navegador y ejecuta <span class="kbd">ejemploCurso()</span> para ver un pequeño ejemplo.</p>
+      </section>
+
+      <!-- Consola -->
+      <section class="card">
+        <div class="section-title">🧪 Práctica en consola</div>
+        <p class="helper">Escribe código HTML y obsérvalo renderizado como texto en la consola virtual.</p>
+        <textarea class="code" id="code-area" spellcheck="false"><!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Mi página</title>
+  </head>
+  <body>
+    <header><h1>Hola mundo</h1></header>
+    <main>
+      <section>
+        <p>Este es un párrafo con <strong>énfasis</strong>.</p>
+      </section>
+    </main>
+    <footer>© 2025</footer>
+  </body>
+</html></textarea>
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button class="btn btn-primary" id="run-code">Ejecutar código</button>
+          <button class="btn btn-secondary" id="clear-console">Limpiar consola</button>
+        </div>
+        <div class="console" style="margin-top:12px;">
+          <div class="helper" style="margin-bottom:6px">Consola virtual</div>
+          <pre id="console-out"></pre>
+        </div>
+      </section>
+
+      <!-- Quiz -->
+      <section class="card quiz">
+        <h3 class="section-title" style="font-size:22px">📝 Quiz de repaso</h3>
+        <form id="quiz-form">
+          <div class="q">
+            <p><strong>1.</strong> ¿Qué etiqueta agrupa el contenido principal?</p>
+            <label class="q-item"><input type="radio" name="q1" value="section"> &lt;section&gt;</label>
+            <label class="q-item"><input type="radio" name="q1" value="main"> &lt;main&gt;</label>
+            <label class="q-item"><input type="radio" name="q1" value="footer"> &lt;footer&gt;</label>
+          </div>
+          <hr class="sep" />
+          <div class="q">
+            <p><strong>2.</strong> ¿Qué atributo aporta texto alternativo a imágenes?</p>
+            <label class="q-item"><input type="radio" name="q2" value="title"> title</label>
+            <label class="q-item"><input type="radio" name="q2" value="alt"> alt</label>
+            <label class="q-item"><input type="radio" name="q2" value="src"> src</label>
+          </div>
+          <hr class="sep" />
+          <div class="q">
+            <p><strong>3.</strong> ¿Cuál etiqueta suele ir al final con información legal?</p>
+            <label class="q-item"><input type="radio" name="q3" value="header"> &lt;header&gt;</label>
+            <label class="q-item"><input type="radio" name="q3" value="main"> &lt;main&gt;</label>
+            <label class="q-item"><input type="radio" name="q3" value="footer"> &lt;footer&gt;</label>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:10px;">
+            <button class="btn btn-primary" type="submit">Enviar respuestas</button>
+            <button class="btn btn-ghost" type="button" id="reset-quiz">Reiniciar</button>
+          </div>
+          <div id="quiz-feedback" class="feedback"></div>
+        </form>
+      </section>
+    </div>
+
+    <p class="footer">Tu progreso queda guardado por curso (XP y nivel). Niveles de 1 a 3.</p>
   </main>
 
   <script src="../assets/js/curso.js"></script>

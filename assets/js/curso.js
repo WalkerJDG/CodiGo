@@ -1,214 +1,150 @@
-/* curso.js (gamer green/cyan) - FINAL
- - Loads one page for all 4 courses (title taken from localStorage.cursoActivo)
- - Editor executes HTML/JS in iframe, console shows logs and errors
- - Quiz displays always; choosing options shows immediate feedback
- - Finish quiz saves best XP (0-100), computes level and redirects to dashboard
- - Buttons: load example, copy example, reset editor
-*/
+/* =========================================================
+   curso.js — Lógica del curso: consola, quiz y XP por curso
+   - Curso activo tomado del localStorage
+   - Suma XP al aprobar; niveles 1–3 (0/100/200)
+   ========================================================= */
+const LS_MIS_CURSOS = "misCursos";
+const LS_CURSO_ACTIVO = "cursoActivo";
 
-// Full courses data (4)
-const COURSES = {
-  "HTML Básico": {
-    title: "HTML Básico",
-    subtitle: "Estructura y semántica",
-    theory: `HTML (HyperText Markup Language) estructura contenido. Usa etiquetas semánticas para accesibilidad y SEO.`,
-    example: `<!doctype html>
-<html><head><meta charset="utf-8"><title>Ejemplo HTML</title></head>
-<body>
-  <h1>Hola mundo</h1>
-  <p>Demo con console.log</p>
-  <script>console.log("Hola desde el ejemplo HTML");</script>
-</body></html>`,
-    runnable: true,
-    quiz: [
-      { pregunta: "¿Qué etiqueta crea un párrafo?", opciones: ["<p>", "<div>", "<span>", "<text>"], respuesta: "<p>" },
-      { pregunta: "¿Qué atributo mejora accesibilidad en <img>?", opciones: ["alt", "src", "title", "href"], respuesta: "alt" }
-    ]
-  },
-  "CSS Moderno": {
-    title: "CSS Moderno",
-    subtitle: "Grid, Flexbox y animaciones",
-    theory: `CSS controla presentación. Usa variables (:root), Flexbox para componentes y Grid para layouts complejos.`,
-    example: `<style>
-body{display:grid;place-items:center;height:100vh;background:linear-gradient(90deg,#00f0ff,#00e676)} 
-.card{padding:20px;border-radius:12px;background:rgba(0,0,0,0.2);color:#fff}
-</style>
-<div class="card"><h1>CSS Demo</h1></div>
-<script>console.log("CSS example loaded")</script>`,
-    runnable: true,
-    quiz: [
-      { pregunta: "¿Cuál activa Flexbox?", opciones: ["display:flex", "flex:1", "layout:flex", "flexbox:true"], respuesta: "display:flex" },
-      { pregunta: "¿Qué selector define variables globales?", opciones: [":root", ".vars", "#root", "@vars"], respuesta: ":root" }
-    ]
-  },
-  "JavaScript Básico": {
-    title: "JavaScript Básico",
-    subtitle: "Eventos, DOM y depuración",
-    theory: `JS añade comportamiento: eventos, DOM y lógica. Depura con console.log y maneja errores con try/catch.`,
-    example: `<button id="b">Click</button>
-<script>
-document.getElementById('b').addEventListener('click', ()=> {
-  console.log("Botón pulsado - demo JS");
-  alert("Hola desde JS");
-});
-</script>`,
-    runnable: true,
-    quiz: [
-      { pregunta: "¿Cómo imprimo en consola?", opciones: ["console.log()", "print()", "echo()", "log()"], respuesta: "console.log()" },
-      { pregunta: "¿Qué objeto representa el documento HTML?", opciones: ["document", "window", "dom", "html"], respuesta: "document" }
-    ]
-  },
-  "Git & GitHub": {
-    title: "Git & GitHub",
-    subtitle: "Control de versiones",
-    theory: `Git mantiene historial de cambios. Flujo: init → add → commit → push. Usar ramas para features.`,
-    example: `# git init
-git add .
-git commit -m "init"
-git push origin main`,
-    runnable: false,
-    quiz: [
-      { pregunta: "¿Qué comando hace un commit?", opciones: ["git commit", "git save", "git push", "git add"], respuesta: "git commit" },
-      { pregunta: "¿Qué servicio aloja repositorios?", opciones: ["GitHub", "Heroku", "Netlify", "Docker"], respuesta: "GitHub" }
-    ]
+const cursosCatalogo = [
+  { id: 1, titulo: "CSS Moderno" },
+  { id: 2, titulo: "JavaScript Básico" },
+  { id: 3, titulo: "Git & GitHub" },
+];
+
+const getLevel = (xp=0) => (xp >= 200 ? 3 : xp >= 100 ? 2 : 1);
+const levelProgressPct = (xp=0) => Math.min(100, xp % 100);
+
+// ---- Estado base ----
+let misCursos = JSON.parse(localStorage.getItem(LS_MIS_CURSOS) || "[]");
+const idActivo = Number(localStorage.getItem(LS_CURSO_ACTIVO) || "0") || (misCursos[0]?.id ?? 1);
+if (!localStorage.getItem(LS_CURSO_ACTIVO)) localStorage.setItem(LS_CURSO_ACTIVO, String(idActivo));
+
+let cursoData = misCursos.find(m => m.id === idActivo);
+if (!cursoData) {
+  // Si se abrió directo sin inscribirse, lo agregamos en nivel 1.
+  cursoData = { id: idActivo, xp: 0 };
+  misCursos.push(cursoData);
+  localStorage.setItem(LS_MIS_CURSOS, JSON.stringify(misCursos));
+}
+
+const cursoInfo = cursosCatalogo.find(c => c.id === idActivo) || { titulo:"Curso" };
+
+// ---- UI refs ----
+const $titulo = document.getElementById("titulo-curso");
+const $pillCurso = document.getElementById("pill-curso");
+const $pillNivel = document.getElementById("pill-nivel");
+const $helper = document.getElementById("helper-xp");
+const $pb = document.getElementById("pb");
+const $out = document.getElementById("console-out");
+const $code = document.getElementById("code-area");
+
+// ---- Inicializar cabecera ----
+function refreshHeader(){
+  const xp = cursoData.xp || 0;
+  const lvl = getLevel(xp);
+  const pct = levelProgressPct(xp);
+  $titulo.textContent = cursoInfo.titulo;
+  $pillCurso.textContent = cursoInfo.titulo;
+  $pillNivel.textContent = `Lv ${lvl}`;
+  $helper.textContent = `XP: ${xp} • Progreso: ${pct}%`;
+  $pb.style.width = `${pct}%`;
+}
+refreshHeader();
+
+// ---- Consola ----
+document.getElementById("run-code").addEventListener("click", () => {
+  const code = $code.value.trim();
+  if (code.length < 20) {
+    toast("El código es demasiado corto. Agrega más líneas para probar.", false);
+    return;
   }
+  // Mostramos el HTML como texto (no lo ejecutamos para mantenerlo seguro)
+  $out.innerHTML = code;
+  toast("Código enviado a la consola virtual.");
+});
+
+document.getElementById("clear-console").addEventListener("click", () => {
+  $out.textContent = "";
+});
+
+// Función de ejemplo solicitada (puedes llamarla en la consola del navegador)
+window.ejemploCurso = function ejemploCurso(){
+  const msg = [
+    "ejemploCurso()",
+    "=================",
+    "Este es un ejemplo rápido.",
+    "Suma de 2 + 3 =", 2+3,
+    "Etiqueta semántica sugerida: <main>"
+  ].join("\n");
+  console.log(msg);
+  return msg;
 };
 
-// ---- load course ----
-const courseName = localStorage.getItem("cursoActivo") || "HTML Básico";
-const course = COURSES[courseName] || COURSES["HTML Básico"];
-const xpKey = `exp_${course.title}`;
-let xp = parseInt(localStorage.getItem(xpKey) || "0");
+// ---- Quiz ----
+const respuestasCorrectas = { q1:"main", q2:"alt", q3:"footer" };
 
-// DOM refs
-const titleEl = document.getElementById("courseTitle");
-const subtitleEl = document.getElementById("courseSubtitle");
-const theoryEl = document.getElementById("theory");
-const exampleEl = document.getElementById("example");
-const editorEl = document.getElementById("editor");
-const outputEl = document.getElementById("output");
-const consoleEl = document.getElementById("console");
-const quizEl = document.getElementById("quiz");
-const finishBtn = document.getElementById("finishBtn");
-const xpBadge = document.getElementById("xpBadge");
-const runBtn = document.getElementById("runBtn");
-const resetBtn = document.getElementById("resetBtn");
-const loadExampleBtn = document.getElementById("loadExample");
-const copyExampleBtn = document.getElementById("copyExample");
+document.getElementById("quiz-form").addEventListener("submit", (e) => {
+  e.preventDefault();
 
-document.addEventListener("DOMContentLoaded", () => {
-  // header
-  titleEl.textContent = course.title;
-  subtitleEl.textContent = course.subtitle;
-  xpBadge.textContent = `XP: ${xp}`;
-
-  // theory & example
-  theoryEl.textContent = course.theory;
-  exampleEl.textContent = course.example;
-
-  // editor (runnable)
-  if (course.runnable) {
-    editorEl.value = course.example;
-  } else {
-    // hide editor card if not runnable (e.g. Git)
-    const editorCard = document.querySelector(".right-col .card");
-    if (editorCard) editorCard.style.display = "none";
+  // Validación: todo respondido
+  const fd = new FormData(e.currentTarget);
+  const ans = { q1: fd.get("q1"), q2: fd.get("q2"), q3: fd.get("q3") };
+  if (!ans.q1 || !ans.q2 || !ans.q3) {
+    setFeedback("Responde todas las preguntas antes de enviar.", false);
+    return;
   }
 
-  renderQuiz(course.quiz);
-  attachHandlers();
+  // Calificación
+  let aciertos = 0;
+  Object.keys(respuestasCorrectas).forEach(k => {
+    if (ans[k] === respuestasCorrectas[k]) aciertos++;
+  });
+
+  const xpGanada = aciertos * 40; // cada correcta = 40 XP (3 correctas = 120 XP → sube un nivel)
+  addXP(xpGanada);
+
+  const msg = `Has acertado ${aciertos}/3. +${xpGanada} XP ${aciertos===3 ? "💥" : ""}`;
+  setFeedback(msg, aciertos >= 2);
 });
 
-// ---------- Run, Console ----------
-let messageInstalled = false;
-function attachHandlers(){
-  if (runBtn) runBtn.addEventListener("click", runCode);
-  if (resetBtn) resetBtn.addEventListener("click", ()=> { if(course.runnable) editorEl.value = course.example; runCode(); });
-  if (loadExampleBtn) loadExampleBtn.addEventListener("click", ()=> { if(course.runnable) editorEl.value = course.example; });
-  if (copyExampleBtn) copyExampleBtn.addEventListener("click", ()=> navigator.clipboard?.writeText(course.example).then(()=> alert("Ejemplo copiado")));
-  if (finishBtn) finishBtn.addEventListener("click", finishQuiz);
+document.getElementById("reset-quiz").addEventListener("click", () => {
+  document.getElementById("quiz-form").reset();
+  setFeedback("", true);
+});
 
-  if (!messageInstalled) {
-    window.addEventListener("message", (e) => {
-      if (!e.data) return;
-      const d = document.createElement("div");
-      d.className = "line " + (e.data.type === "err" ? "err" : "log");
-      d.textContent = (e.data.type === "err" ? "❌ " : "▶ ") + e.data.msg;
-      consoleEl.appendChild(d);
-      consoleEl.scrollTop = consoleEl.scrollHeight;
-    });
-    messageInstalled = true;
-  }
+function setFeedback(text, ok){
+  const el = document.getElementById("quiz-feedback");
+  el.textContent = text;
+  el.className = "feedback " + (ok ? "ok" : "bad");
 }
 
-function runCode(){
-  if (!course.runnable) { alert("Este curso no ejecuta código en el navegador."); return; }
-  const code = editorEl.value || "";
-  consoleEl.innerHTML = "";
-  const payload = `<!doctype html><html><head><meta charset="utf-8"></head><body>
-<script>
-(function(){
-  const orig = console.log;
-  console.log = function(){ orig.apply(console,arguments); parent.postMessage({type:'log', msg: Array.from(arguments).join(' ')}, '*'); };
-  window.onerror = function(msg, src, line, col){ parent.postMessage({type:'err', msg: msg + ' ('+line+':'+col+')'}, '*'); };
-})();
-</script>
-${code}
-</body></html>`;
-  outputEl.srcdoc = payload;
+// ---- XP / Nivel ----
+function addXP(amount){
+  if (!amount || amount <= 0) return;
+  cursoData.xp = Math.min(240, (cursoData.xp || 0) + amount); // cap ligero para evitar overflow
+  // Persistir
+  misCursos = misCursos.map(m => m.id === cursoData.id ? cursoData : m);
+  localStorage.setItem(LS_MIS_CURSOS, JSON.stringify(misCursos));
+  refreshHeader();
+  toast(`XP +${amount}. Nivel actual: ${getLevel(cursoData.xp)}.`);
 }
 
-// ---------- Quiz ----------
-function renderQuiz(list){
-  quizEl.innerHTML = "";
-  list.forEach((q, idx) => {
-    const item = document.createElement("div");
-    item.className = "quiz-item";
-    const p = document.createElement("p");
-    p.innerHTML = `<strong>${idx+1}.</strong> ${q.pregunta}`;
-    item.appendChild(p);
-
-    q.opciones.forEach(opt => {
-      const label = document.createElement("label");
-      label.className = "quiz-opt";
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = `q_${idx}`;
-      input.value = opt;
-      input.style.marginRight = "8px";
-
-      input.addEventListener("change", () => {
-        item.querySelectorAll(".quiz-opt").forEach(el => el.classList.remove("correct","wrong"));
-        if (opt === q.respuesta) label.classList.add("correct");
-        else label.classList.add("wrong");
-      });
-
-      label.appendChild(input);
-      label.appendChild(document.createTextNode(opt));
-      item.appendChild(label);
-    });
-
-    quizEl.appendChild(item);
-  });
+function toast(text, positive = true){
+  const t = document.createElement("div");
+  t.textContent = text;
+  t.style.position="fixed";
+  t.style.right="16px";
+  t.style.bottom="16px";
+  t.style.padding="10px 14px";
+  t.style.borderRadius="12px";
+  t.style.fontWeight="800";
+  t.style.background = positive
+    ? "linear-gradient(90deg, var(--brand-2), var(--accent))"
+    : "linear-gradient(90deg, #fda4af, #fecaca)";
+  t.style.color="#0b1220";
+  t.style.boxShadow="0 8px 20px rgba(0,0,0,.35)";
+  t.style.zIndex="1000";
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2200);
 }
-
-// ---------- Finish quiz -> save XP and redirect ----------
-function finishQuiz(){
-  const answers = course.quiz;
-  let correct = 0;
-  answers.forEach((q, idx) => {
-    const sel = document.querySelector(`input[name="q_${idx}"]:checked`);
-    if (sel && sel.value === q.respuesta) correct++;
-  });
-  const scorePct = Math.round((correct / answers.length) * 100);
-  alert(`Resultado: ${correct}/${answers.length} (${scorePct}%)`);
-  if (scorePct > xp) {
-    xp = scorePct;
-    localStorage.setItem(xpKey, xp);
-  }
-  // redirect after tiny delay so alert shows
-  setTimeout(()=> { window.location.href = "dashboard.html"; }, 200);
-}
-
-// ---------- nav ----------
-function volverDashboard(){ window.location.href = "dashboard.html"; }
