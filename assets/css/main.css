@@ -289,3 +289,24 @@ hr.sep{ border:0; border-top:1px solid rgba(255,255,255,.06); margin:16px 0 }
   outline: none !important;
   box-shadow: none !important;
 }
+a {
+  text-decoration: none;
+  position: relative;
+  color: inherit;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px; /* un poco separado del texto */
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-2), var(--accent));
+  transition: width 0.3s ease-in-out;
+  border-radius: 2px;
+}
+
+a:hover::after {
+  width: 100%;
+}
