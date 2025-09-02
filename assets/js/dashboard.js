@@ -118,9 +118,14 @@ function cardMio(curso, data) {
 // Simulación de cerrar sesión (limpia inscripciones si quieres)
 document.getElementById("btn-logout").addEventListener("click", () => {
   if (!confirm("¿Seguro que deseas cerrar sesión?")) return;
-  // Sólo ejemplo: no borro cursos; si quieres limpiar: localStorage.clear();
-  alert("Sesión cerrada.");
+
+  // Elimina usuario activo (sin borrar progreso de cursos)
+  localStorage.removeItem("usuarioActivo");
+
+  // Redirige al login
+  window.location.href = "../index.html";
 });
+
 
 // Init
 render();
